@@ -1,42 +1,56 @@
 import MovieCard from "../components/MovieCard";
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { getPopularMovies,searchMovies } from "../services/api";
 import "../css/Home.css";
 
 
 function Home() {
 
     const [searchquery, setsearchquery] = useState("");
+    const [movies, setMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const handlesearch = (e) => {
-        e.preventDefault()
-        alert(searchquery)
-    }
+    useEffect(() => {
+        const loadPopularMovies = async () => {
+            try {
+                const getpopularmovies = await getPopularMovies();
+                console.log("Fetched movies:", getpopularmovies);
+                setMovies(getpopularmovies);
+            } catch (err) {
+                console.error("Failed to fetch popular movies:", err);
+                setError("Failed to fetch popular movies");
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadPopularMovies();
+    }, []);
 
-    const movies = [
-        {
-            id: 1,
-            title: "terminator",
-            description: "a fucking good movie",
-            realeaseDate: "1996"
-        },
-        {
-            id: 2,
-            title: "koi mil gya",
-            description: "a jaddu",
-            realeaseDate: "1996"
-        },
-        {
-            id: 3,
-            title: "saiyara",
-            description: "chutiya film",
-            realeaseDate: "1996"
+    const handlesearch = async (e) => {
+        e.preventDefault();
+        if (!searchquery.trim()) return;
+        if (loading) return;
+
+        try {
+            setLoading(true);
+            setError(null);
+            const searchResults = await searchMovies(searchquery); // <-- await here
+            console.log("Search results:", searchResults);
+            setMovies(searchResults);
+        } catch (err) {
+            console.error("Failed to search movies:", err);
+            setError("Failed to search movies");
+        } finally {
+            setLoading(false);
         }
-    ]
+    }
 
 
     return (
 
         <div className="home">
+            
             <form onSubmit={handlesearch} className="search-form">
 
                 <input type="text"
@@ -49,14 +63,17 @@ function Home() {
                 <button type="submit" className="search-button">Search</button>
             </form>
 
+            {error && <div className="error-message">{error}</div>}
 
-            <div className="movies-grid">
+            {loading ? (<div className="loading">Loading...</div>) :(
+                     <div className="movies-grid">
                 {movies.map((movie) => 
                 (
                     <MovieCard key={movie.id} movie={movie} />
                 )
                 )}
             </div>
+            )}
         </div>
     )
 }
