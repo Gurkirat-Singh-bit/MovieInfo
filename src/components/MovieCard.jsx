@@ -1,5 +1,4 @@
-
-// import "../css/MovieCard.css";
+import "../css/MovieCard.css";
 
 function onClickFav() {
     alert("Added to favorites!");
@@ -9,15 +8,18 @@ function onClickFav() {
 function MovieCard({movie}){
     return(
         <div className="movie-card">
-            <div className="movie-img">
+            <div className="movie-poster">
                 <img src={movie.url} alt={movie.title} />
-                <button className="fav button" onClick={onClickFav}>
-                    ❤️
-                </button>
+                <div className="movie-overlay">
+                    <button className="favorite-btn" onClick={onClickFav}>
+                        ♥
+                    </button>
+                </div>
             </div>
-            <h2>{movie.title}</h2>
-            <p>{movie.description}</p>
-            <p>{movie.releaseDate}</p>
+            <div className="movie-info">
+                <h2>{movie.title}</h2>
+                <p>{movie.releaseDate}</p>
+            </div>
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import MovieCard from "../components/MovieCard";
 import { useState } from "react"
-// import "../css/Home.css";
+import "../css/Home.css";
 
 
 function Home() {
@@ -41,7 +41,7 @@ function Home() {
 
                 <input type="text"
                     placeholder="Search for a movie..."
-                    className="search-movie"
+                    className="search-input"
                     value={searchquery}
                     onChange={(e) => setsearchquery(e.target.value)}
                 />
@@ -50,7 +50,7 @@ function Home() {
             </form>
 
 
-            <div className="movie-grid">
+            <div className="movies-grid">
                 {movies.map((movie) => 
                 (
                     <MovieCard key={movie.id} movie={movie} />
